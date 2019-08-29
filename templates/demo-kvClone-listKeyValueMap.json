@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "variables": {
+    "configStoreName": "yashiDemoDestination"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "keyValueMapTemplate",
+      "apiVersion": "2018-05-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/bangbingsyb/AppConfigArmTemplate/master/templates/linkedTemplate.json",
+          "contentVersion": "1.0.0.0"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores/keys/labels",
+      "name": "[concat(variables('configStoreName'), '/apple/demo')]",
+      "apiVersion": "2019-02-01-preview",
+      "properties": {
+        "value": "[reference('keyValueMapTemplate').outputs.keyValueMap.value.items.apple.value]"
+      },
+      "dependsOn": [
+        "keyValueMapTemplate"
+      ]
+    },
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores/keys/labels",
+      "name": "[concat(variables('configStoreName'), '/banana/demo')]",
+      "apiVersion": "2019-02-01-preview",
+      "properties": {
+        "value": "[reference('keyValueMapTemplate').outputs.keyValueMap.value.items.banana.value]"
+      },
+      "dependsOn": [
+        "keyValueMapTemplate"
+      ]
+    }
+  ]
+}

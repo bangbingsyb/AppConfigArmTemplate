@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "variables": {
+    "sourceConfigStoreName": "yashiDemoSource",
+    "destinationConfigStoreName": "yashiDemoDestination",
+    "sourceConfigStoreResourceId": "[resourceId('Microsoft.AppConfiguration/configurationStores', variables('sourceConfigStoreName'))]",
+    "key": "kiwi",
+    "label": "fresh",
+    "keyValueParameters": {
+      "key": "[variables('key')]",
+      "label": "[variables('label')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.AppConfiguration/configurationStores/keys/labels",
+      "name": "[concat(variables('destinationConfigStoreName'), '/', variables('key'), '/', variables('label'))]",
+      "apiVersion": "2019-02-01-preview",
+      "properties": {
+        "value": "[listKeyValue(variables('sourceConfigStoreResourceId'), '2019-02-01-preview', variables('keyValueParameters')).value]"
+      }
+    }
+  ]
+}
